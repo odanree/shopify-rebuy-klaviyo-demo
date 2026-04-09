@@ -1,0 +1,19 @@
+{
+  "name": "shopify-rebuy-klaviyo-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shopify theme integration demo wiring Rebuy Personalization Engine recommendations with Klaviyo event tracking for abandoned cart and post-purchase flows",
+  "scripts": {
+    "dev": "shopify theme dev",
+    "push": "shopify theme push",
+    "pull": "shopify theme pull",
+    "check": "shopify theme check"
+  },
+  "devDependencies": {
+    "@shopify/cli": "^3.0.0",
+    "@shopify/theme-check-node": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,36 @@
+{% comment %}
+  Server-rendered Klaviyo events for pages where product/order data
+  is known at render time.
+
+  Fires:
+    - Viewed Product  — on product pages (feeds Browse Abandonment flow)
+    - Started Checkout — NOT here (handled via Shopify native Klaviyo integration)
+    - Ordered Product  — NOT here (handled by Klaviyo Shopify integration webhook)
+
+  Client-side events (Add to Cart, Rebuy widget interactions) are in klaviyo-events.js.
+{% endcomment %}
+
+{% assign klaviyo_public_key = settings.klaviyo_public_key | strip %}
+{% if klaviyo_public_key != blank %}
+
+  {%- if template == 'product' -%}
+  <script>
+    var _learnq = _learnq || [];
+    _learnq.push(['track', 'Viewed Product', {
+      Name: {{ product.title | json }},
+      ProductID: {{ product.id | json }},
+      Categories: [
+        {% for collection in product.collections limit: 3 %}
+          {{ collection.title | json }}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+      ImageURL: {{ product.featured_image | img_url: '600x' | prepend: 'https:' | json }},
+      URL: {{ shop.url | append: product.url | json }},
+      Brand: {{ product.vendor | json }},
+      Price: {{ product.price | divided_by: 100.0 | json }},
+      CompareAtPrice: {{ product.compare_at_price | divided_by: 100.0 | json }}
+    }]);
+  </script>
+  {%- endif -%}
+
+{% endif %}

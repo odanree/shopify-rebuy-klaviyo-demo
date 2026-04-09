@@ -1,0 +1,106 @@
+{% comment %}
+  main-product.liquid
+  Product page — extends Dawn with:
+    1. Rebuy product page recommendations widget ("Complete the look")
+    2. Klaviyo Viewed Product event (server-rendered)
+    3. Klaviyo Back in Stock widget (sold-out variants)
+{% endcomment %}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+{%- comment -%} === KLAVIYO: Viewed Product event (feeds Browse Abandonment flow) {%- endcomment -%}
+{%- render 'klaviyo-events' -%}
+
+<section id="MainProduct-{{ section.id }}" class="page-width section-{{ section.id }}-padding" data-section="{{ section.id }}">
+  <div class="product grid grid--1-col grid--2-col-tablet">
+
+    <div class="grid__item product__media-wrapper">
+      {%- if product.featured_media -%}
+        <div class="product__media-list">
+          {%- for media in product.media -%}
+            <div class="product__media-item{% if media == product.featured_media %} product__media-item--active{% endif %}">
+              {%- if media.media_type == 'image' -%}
+                <img
+                  srcset="{{ media | img_url: '360x' }} 360w, {{ media | img_url: '720x' }} 720w"
+                  sizes="(min-width: 750px) 50vw, 100vw"
+                  src="{{ media | img_url: '720x' }}"
+                  alt="{{ media.alt | escape }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                >
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="grid__item product__info-wrapper">
+      <div class="product__info-container">
+        <h1 class="product__title">{{ product.title }}</h1>
+        <div class="product__price">{{ current_variant.price | money }}</div>
+        <div class="product__description rte">{{ product.description }}</div>
+
+        {%- form 'product', product, id: 'product-form', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+          {%- for option in product.options_with_values -%}
+            <div class="product__variant-option">
+              <label>{{ option.name }}</label>
+              <select name="options[{{ option.name | escape }}]">
+                {%- for value in option.values -%}
+                  <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>
+                    {{ value }}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endfor -%}
+
+          {%- if current_variant.available -%}
+            <button type="submit" name="add" class="button button--full-width button--primary">
+              Add to cart
+            </button>
+          {%- else -%}
+            <p class="product__sold-out">Sold out</p>
+            {%- comment -%}
+              Klaviyo Back in Stock widget.
+              Replace data-klaviyo-bis-id with your actual variant ID attribute name
+              if using Klaviyo's embedded BIS form.
+            {%- endcomment -%}
+            <div
+              class="klaviyo-bis-trigger"
+              data-klaviyo-product-id="{{ product.id }}"
+              data-klaviyo-variant-id="{{ current_variant.id }}"
+            ></div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%}
+  Rebuy "Complete the look" widget below the product form.
+  Widget ID is configured in the Rebuy dashboard and stored in theme settings
+  so it can be changed without a code deploy.
+{%- endcomment -%}
+{%- if settings.rebuy_product_widget_id != blank -%}
+  <div class="page-width">
+    {%- render 'rebuy-recommendations',
+      widget_id: settings.rebuy_product_widget_id,
+      heading: 'Complete the look',
+      limit: 4,
+      context: 'product'
+    -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "section",
+  "class": "section",
+  "settings": [],
+  "presets": [{ "name": "Product information" }]
+}
+{% endschema %}

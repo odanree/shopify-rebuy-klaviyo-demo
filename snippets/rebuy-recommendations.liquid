@@ -1,0 +1,50 @@
+{% comment %}
+  Rebuy Personalization Engine — recommendations widget snippet.
+
+  Renders a Rebuy Smart Cart or product recommendation widget.
+  The data-rebuy-id maps to the Rule ID created in the Rebuy dashboard.
+
+  Parameters:
+    widget_id    — (required) Rebuy Rule ID
+    heading      — (optional) Section heading text, default "You may also like"
+    limit        — (optional) Max products to display, default 4
+    context      — (optional) "product" | "cart" | "post-purchase" — controls layout
+
+  Usage:
+    {% render 'rebuy-recommendations',
+       widget_id: '12345',
+       heading: 'Complete the look',
+       limit: 3,
+       context: 'product'
+    %}
+
+  Rebuy injects recommendation cards into [data-rebuy-id] elements after
+  its JS initializes. We provide skeleton markup that is replaced by Rebuy.
+{% endcomment %}
+
+{% assign heading_text = heading | default: 'You may also like' %}
+{% assign display_limit = limit | default: 4 %}
+
+<div
+  class="rebuy-recommendations rebuy-recommendations--{{ context | default: 'product' }}"
+  data-rebuy-id="{{ widget_id }}"
+  data-rebuy-limit="{{ display_limit }}"
+  aria-label="{{ heading_text }}"
+>
+  <h2 class="rebuy-recommendations__heading">{{ heading_text }}</h2>
+
+  {%- comment -%}
+    Skeleton placeholders shown while Rebuy JS loads.
+    Rebuy replaces the [data-rebuy-id] element content once it initializes.
+    CSS hides skeletons once rebuy--loaded class is added by Rebuy.
+  {%- endcomment -%}
+  <div class="rebuy-recommendations__skeleton" aria-hidden="true">
+    {% for i in (1..display_limit) %}
+      <div class="rebuy-product-card rebuy-product-card--skeleton">
+        <div class="rebuy-product-card__image skeleton-block"></div>
+        <div class="rebuy-product-card__title skeleton-block"></div>
+        <div class="rebuy-product-card__price skeleton-block"></div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

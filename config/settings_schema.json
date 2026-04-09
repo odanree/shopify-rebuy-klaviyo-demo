@@ -1,0 +1,88 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Dawn Rebuy + Klaviyo Demo",
+    "theme_version": "1.0.0",
+    "theme_author": "Danh Le",
+    "theme_documentation_url": "https://github.com/danh-le/shopify-rebuy-klaviyo-demo",
+    "theme_support_url": "https://github.com/danh-le/shopify-rebuy-klaviyo-demo/issues"
+  },
+  {
+    "name": "Email Marketing",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Klaviyo"
+      },
+      {
+        "type": "text",
+        "id": "klaviyo_public_key",
+        "label": "Klaviyo Public API Key",
+        "info": "Found in Klaviyo → Account → API Keys. Leave blank to disable Klaviyo.",
+        "placeholder": "AbCdEf"
+      }
+    ]
+  },
+  {
+    "name": "Personalization",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Rebuy Personalization Engine"
+      },
+      {
+        "type": "text",
+        "id": "rebuy_api_key",
+        "label": "Rebuy API Key",
+        "info": "Found in Rebuy Dashboard → Settings → API. Leave blank to disable Rebuy.",
+        "placeholder": "your-rebuy-api-key"
+      },
+      {
+        "type": "text",
+        "id": "rebuy_product_widget_id",
+        "label": "Product page widget Rule ID",
+        "info": "Rebuy Rule ID for the 'Complete the look' product page recommendations."
+      },
+      {
+        "type": "text",
+        "id": "rebuy_cart_widget_id",
+        "label": "Cart page widget Rule ID",
+        "info": "Rebuy Rule ID for the 'You might also need' cart cross-sell widget."
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "colors_background_1",
+        "label": "Background 1",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_1",
+        "label": "Accent 1",
+        "default": "#121212"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Heading font",
+        "default": "assistant_n4"
+      }
+    ]
+  }
+]

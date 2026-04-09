@@ -1,0 +1,98 @@
+{% comment %}
+  main-cart.liquid
+  Cart page — extends Dawn with:
+    1. Rebuy Smart Cart cross-sell widget ("You might also need")
+    2. Rebuy "frequently bought together" inline recommendations
+    3. Klaviyo cart state tracking (passed to abandoned cart flow)
+{% endcomment %}
+
+<div class="page-width cart-page">
+  {%- if cart.item_count > 0 -%}
+
+    <h1 class="cart__title">Your cart</h1>
+
+    <form action="/checkout" method="post" id="cart">
+
+      <div class="cart__items">
+        {%- for item in cart.items -%}
+          <div class="cart__item" data-key="{{ item.key }}">
+            <div class="cart__item-image">
+              <img src="{{ item.image | img_url: '120x' }}" alt="{{ item.title | escape }}" loading="lazy">
+            </div>
+
+            <div class="cart__item-details">
+              <a href="{{ item.url }}" class="cart__item-title">{{ item.product.title }}</a>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <p class="cart__item-variant">{{ item.variant.title }}</p>
+              {%- endunless -%}
+              <p class="cart__item-price">{{ item.price | money }}</p>
+            </div>
+
+            <div class="cart__item-quantity">
+              <input
+                type="number"
+                name="updates[]"
+                id="updates_{{ item.key }}"
+                value="{{ item.quantity }}"
+                min="0"
+                aria-label="Quantity for {{ item.title | escape }}"
+              >
+            </div>
+
+            <div class="cart__item-total">{{ item.line_price | money }}</div>
+
+            <a
+              href="/cart/change?line={{ forloop.index }}&quantity=0"
+              class="cart__item-remove"
+              aria-label="Remove {{ item.title | escape }}"
+              data-variant-id="{{ item.variant_id }}"
+              data-product-title="{{ item.product.title | escape }}"
+            >Remove</a>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="cart__footer">
+        <div class="cart__subtotal">
+          <span>Subtotal</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <p class="cart__taxes-note">Taxes and shipping calculated at checkout</p>
+        <button type="submit" name="checkout" class="button button--primary cart__checkout-btn" data-checkout-btn>
+          Check out
+        </button>
+      </div>
+
+    </form>
+
+    {%- comment -%}
+      Rebuy cross-sell widget — "You might also need"
+      Fires after cart items are rendered. Rebuy reads the current cart state
+      to determine which cross-sells are most relevant.
+    {%- endcomment -%}
+    {%- if settings.rebuy_cart_widget_id != blank -%}
+      {%- render 'rebuy-recommendations',
+        widget_id: settings.rebuy_cart_widget_id,
+        heading: 'You might also need',
+        limit: 3,
+        context: 'cart'
+      -%}
+    {%- endif -%}
+
+  {%- else -%}
+    <div class="cart__empty">
+      <h1>Your cart is empty</h1>
+      <a href="/collections/all" class="button button--primary">Continue shopping</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "class": "section",
+  "settings": [],
+  "presets": [{ "name": "Cart" }]
+}
+{% endschema %}

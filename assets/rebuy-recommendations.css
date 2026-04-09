@@ -1,0 +1,95 @@
+/**
+ * rebuy-recommendations.css
+ * Styles for Rebuy recommendation widget containers and skeleton loaders.
+ * Rebuy injects its own product card markup — these styles handle the
+ * wrapper layout and the pre-load skeleton state.
+ */
+
+.rebuy-recommendations {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(var(--color-base-accent-1), 0.1);
+}
+
+.rebuy-recommendations__heading {
+  font-family: var(--font-heading-family);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Skeleton loader — shown before Rebuy JS initializes */
+.rebuy-recommendations__skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.rebuy-recommendations--loaded .rebuy-recommendations__skeleton {
+  display: none;
+}
+
+.rebuy-product-card--skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-block {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-base-accent-1), 0.05) 25%,
+    rgba(var(--color-base-accent-1), 0.1) 37%,
+    rgba(var(--color-base-accent-1), 0.05) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  border-radius: 4px;
+}
+
+.rebuy-product-card--skeleton .rebuy-product-card__image.skeleton-block {
+  aspect-ratio: 1;
+  width: 100%;
+}
+
+.rebuy-product-card--skeleton .rebuy-product-card__title.skeleton-block {
+  height: 1rem;
+  width: 80%;
+}
+
+.rebuy-product-card--skeleton .rebuy-product-card__price.skeleton-block {
+  height: 1rem;
+  width: 40%;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Rebuy widget — product grid override */
+.rebuy-recommendations [data-rebuy-id] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Cart context — horizontal scroll on mobile */
+.rebuy-recommendations--cart [data-rebuy-id] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 749px) {
+  .rebuy-recommendations--cart [data-rebuy-id] {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .rebuy-recommendations--cart [data-rebuy-id] > * {
+    flex: 0 0 75%;
+    scroll-snap-align: start;
+  }
+}
